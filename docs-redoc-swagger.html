@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Documentação - Cartão Interno (Redoc & Swagger UI)</title>
+  <style>
+    body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin: 0; }
+    header { background:#0b5cff; color:white; padding:16px 24px; display:flex; align-items:center; gap:16px }
+    header h1 { font-size:18px; margin:0 }
+    .container { display:flex; height: calc(100vh - 64px); }
+    .sidebar { width:220px; background:#f5f7fb; padding:12px; box-sizing:border-box; border-right:1px solid #e6e9ef }
+    .content { flex:1; overflow:auto }
+    .btn { display:inline-block; padding:8px 12px; margin:6px 0; background:#0b5cff; color:#fff; border-radius:6px; text-decoration:none }
+    .small { font-size:13px; color:#666 }
+    .frame { width:100%; height:100%; border:0 }
+  </style>
+  <!-- Swagger UI & Redoc from CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
+  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/redoc/bundles/redoc.standalone.js"></script>
+</head>
+<body>
+  <header>
+    <div style="width:44px;height:44px;border-radius:8px;background:white;display:flex;align-items:center;justify-content:center;color:#0b5cff;font-weight:700">CI</div>
+    <div>
+      <h1>Documentação — Cartão Interno (Redoc & Swagger UI)</h1>
+      <div class="small">Abra este arquivo localmente (File → Open) ou hospede em um servidor estático</div>
+    </div>
+  </header>
+  <div class="container">
+    <aside class="sidebar">
+      <strong>Visualizações</strong>
+      <div style="margin-top:12px">
+        <button class="btn" id="btn-redoc">Redoc</button>
+        <button class="btn" id="btn-swagger">Swagger UI</button>
+      </div>
+      <hr />
+      <div class="small">Atenção:</div>
+      <ul class="small">
+        <li>Se abrir localmente e browsers bloquearem fetch por CORS/file, use um servidor estático (ex: `npx http-server`)</li>
+        <li>Você pode editar a variável <code>spec</code> abaixo para atualizar o OpenAPI</li>
+      </ul>
+      <hr />
+      <div class="small">Export options:</div>
+      <ul class="small">
+        <li>Baixe este arquivo e abra no navegador</li>
+        <li>Hospede em um bucket (S3 / Cloud Storage) para acesso público</li>
+      </ul>
+    </aside>
+
+    <main class="content">
+      <!-- Container where either Redoc or Swagger UI will render -->
+      <div id="app" style="height:100%;"></div>
+    </main>
+  </div>
+
+  <script>
+    // -----------------------------
+    // OPENAPI SPEC
+    // -----------------------------
+    // NOTE: this spec was inlined from your OpenAPI export. If you prefer, replace with a fetch('openapi.json') to '/openapi.json'
+    // Load spec externally instead of inline to avoid syntax issues
+    let spec = {};
+    fetch('openapi.json')
+      .then(r => r.json())
+      .then(data => { spec = data; renderRedoc(); })
+      .catch(err => console.error('Erro ao carregar OpenAPI:', err));
+
+    // -----------------------------
+    // RENDER FUNCTIONS
+    // -----------------------------
+    function renderRedoc() {
+      document.getElementById('app').innerHTML = '<redoc spec=""></redoc>';
+      Redoc.init(spec, {}, document.getElementById('app'));
+    }
+
+    function renderSwagger() {
+      document.getElementById('app').innerHTML = '<div id="swagger-ui"></div>';
+      const ui = SwaggerUIBundle({
+        spec: spec,
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [SwaggerUIBundle.presets.apis],
+        layout: "BaseLayout"
+      });
+    }
+
+    // Attach buttons
+    document.getElementById('btn-redoc').addEventListener('click', renderRedoc);
+    document.getElementById('btn-swagger').addEventListener('click', renderSwagger);
+
+    // Default render
+    renderRedoc();
+  </script>
+</body>
+</html>

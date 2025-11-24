@@ -1,0 +1,589 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Cartão de Crédito Interno – API (Versão Expandida)",
+    "description": "API completa para gestão de adiantamento de crédito interno (fiado controlado).",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "https://api.cartao-interno.com/v1" },
+    { "url": "http://localhost:8000/v1" }
+  ],
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "Autenticação de usuário",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/auth/refresh": {
+      "post": {
+        "summary": "Renova token JWT",
+        "tags": ["Auth"],
+        "responses": {
+          "200": {
+            "description": "Token renovado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout",
+        "tags": ["Auth"],
+        "responses": { "204": { "description": "Logout realizado" } }
+      }
+    },
+
+    "/admin/lojas": {
+      "get": {
+        "summary": "Listar lojas",
+        "tags": ["Lojas"],
+        "responses": {
+          "200": {
+            "description": "Lista de lojas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Loja" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Criar loja",
+        "tags": ["Lojas"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LojaInput" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Criado" } }
+      }
+    },
+
+    "/admin/lojas/{id}": {
+      "get": {
+        "summary": "Obter loja",
+        "tags": ["Lojas"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {"200": {
+          "description": "Loja",
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/Loja" } }
+          }
+        }}
+      },
+      "put": {
+        "summary": "Atualizar loja",
+        "tags": ["Lojas"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/LojaInput" } }
+          }
+        },
+        "responses": { "200": { "description": "Atualizado" } }
+      },
+      "delete": {
+        "summary": "Remover loja",
+        "tags": ["Lojas"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "204": { "description": "Excluído" } }
+      }
+    },
+
+    "/lojas/{lojaId}/clientes": {
+      "get": {
+        "summary": "Listar clientes da loja",
+        "tags": ["Clientes"],
+        "parameters": [
+          { "name": "lojaId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Clientes",
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Cliente" } }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Cadastrar cliente",
+        "tags": ["Clientes"],
+        "parameters": [
+          { "name": "lojaId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ClienteInput" } }
+          }
+        },
+        "responses": { "201": { "description": "Cliente criado" } }
+      }
+    },
+
+    "/clientes/{id}": {
+      "get": {
+        "summary": "Obter cliente",
+        "tags": ["Clientes"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Cliente" } }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualizar cliente",
+        "tags": ["Clientes"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ClienteInput" } }
+          }
+        },
+        "responses": { "200": { "description": "Atualizado" } }
+      }
+    },
+
+    "/clientes/{id}/bloquear": {
+      "patch": {
+        "summary": "Bloquear cliente",
+        "tags": ["Clientes"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Bloqueado" } }
+      }
+    },
+
+    "/clientes/{id}/desbloquear": {
+      "patch": {
+        "summary": "Desbloquear cliente",
+        "tags": ["Clientes"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Desbloqueado" } }
+      }
+    },
+
+    "/clientes/{id}/limite": {
+      "get": {
+        "summary": "Consultar limite",
+        "tags": ["Limites"],
+        "parameters": [
+          { "name": "id", "in": "path", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": {
+          "200": {
+            "description": "Limite atual",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Limite" } }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Atualizar limite",
+        "tags": ["Limites"],
+        "parameters": [
+          { "name": "id", "in": "path", "schema": { "type": "string" }, "required": true }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/LimiteInput" } }
+          }
+        },
+        "responses": { "200": { "description": "Limite atualizado" } }
+      }
+    },
+
+    "/transacoes": {
+      "get": {
+        "summary": "Listar transações (admin)",
+        "tags": ["Transações"],
+        "responses": {
+          "200": {
+            "description": "Transações",
+            "content": { "application/json": { "schema": { "type": "array",
+              "items": { "$ref": "#/components/schemas/Transacao" } } } }
+          }
+        }
+      }
+    },
+
+    "/clientes/{id}/transacoes": {
+      "get": {
+        "summary": "Listar transações do cliente",
+        "tags": ["Transações"],
+        "parameters": [
+          { "name": "id", "in": "path", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista",
+            "content": {
+              "application/json": { "schema": { "type": "array",
+                "items": { "$ref": "#/components/schemas/Transacao" } } }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Criar transação",
+        "tags": ["Transações"],
+        "parameters": [
+          { "name": "id", "in": "path", "schema": { "type": "string" }, "required": true }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/TransacaoInput" } }
+          }
+        },
+        "responses": { "201": { "description": "Transação criada" } }
+      }
+    },
+
+    "/transacoes/{id}": {
+      "delete": {
+        "summary": "Cancelar/estornar transação",
+        "tags": ["Transações"],
+        "parameters": [
+          { "name": "id", "in": "path", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": { "200": { "description": "Estornada" } }
+      }
+    },
+
+    "/faturas/{clienteId}/atual": {
+      "get": {
+        "summary": "Fatura atual (aberta)",
+        "tags": ["Faturas"],
+        "parameters": [
+          { "name": "clienteId", "in": "path", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fatura",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Fatura" } }
+            }
+          }
+        }
+      }
+    },
+
+    "/faturas/{clienteId}/historico": {
+      "get": {
+        "summary": "Histórico de faturas",
+        "tags": ["Faturas"],
+        "parameters": [
+          { "name": "clienteId", "in": "path", "schema": { "type": "string" }, "required": true }
+        ],
+        "responses": {
+          "200": {
+            "description": "Histórico",
+            "content": {
+              "application/json": { "schema": { "type": "array",
+                "items": { "$ref": "#/components/schemas/Fatura" } } }
+            }
+          }
+        }
+      }
+    },
+
+    "/pagamentos": {
+      "post": {
+        "summary": "Registrar pagamento",
+        "tags": ["Pagamentos"],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/PagamentoInput" } }
+          }
+        },
+        "responses": { "201": { "description": "Pagamento registrado" } }
+      }
+    },
+
+    "/pagamentos/{id}": {
+      "get": {
+        "summary": "Consultar pagamento",
+        "tags": ["Pagamentos"],
+        "parameters": [
+          { "name": "id", "in": "path", "schema": {"type": "string"}, "required": true }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pagamento",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Pagamento" } }
+            }
+          }
+        }
+      }
+    },
+
+    "/notificacoes/email": {
+      "post": {
+        "summary": "Enviar email",
+        "tags": ["Notificações"],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/EmailNotificacao" } }
+          }
+        },
+        "responses": { "202": { "description": "Enviado" } }
+      }
+    },
+
+    "/notificacoes/whatsapp": {
+      "post": {
+        "summary": "Enviar WhatsApp",
+        "tags": ["Notificações"],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/WhatsappNotificacao" } }
+          }
+        },
+        "responses": { "202": { "description": "Enviado" } }
+      }
+    }
+  },
+
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "password": { "type": "string" }
+        },
+        "required": ["email", "password"]
+      },
+
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "token": { "type": "string" },
+          "refreshToken": { "type": "string" },
+          "user": { "$ref": "#/components/schemas/Usuario" }
+        }
+      },
+
+      "Usuario": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "nome": { "type": "string" },
+          "email": { "type": "string" },
+          "role": { "type": "string", "enum": ["admin", "gerente", "cliente"] }
+        }
+      },
+
+      "LojaInput": {
+        "type": "object",
+        "properties": {
+          "nome": { "type": "string" },
+          "endereco": { "type": "string" },
+          "telefone": { "type": "string" },
+          "gerenteId": { "type": "string" }
+        }
+      },
+
+      "Loja": {
+        "allOf": [
+          { "$ref": "#/components/schemas/LojaInput" },
+          {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "createdAt": { "type": "string", "format": "date-time" }
+            }
+          }
+        ]
+      },
+
+      "ClienteInput": {
+        "type": "object",
+        "properties": {
+          "nome": { "type": "string" },
+          "cpf": { "type": "string" },
+          "telefone": { "type": "string" },
+          "email": { "type": "string" }
+        }
+      },
+
+      "Cliente": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ClienteInput" },
+          {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "status": { "type": "string", "enum": ["ativo", "bloqueado"] },
+              "limite": { "type": "number" },
+              "limiteUsado": { "type": "number" },
+              "createdAt": { "type": "string", "format": "date-time" }
+            }
+          }
+        ]
+      },
+
+      "LimiteInput": {
+        "type": "object",
+        "properties": {
+          "valor": { "type": "number" }
+        }
+      },
+
+      "Limite": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "clienteId": { "type": "string" },
+          "valor": { "type": "number" },
+          "usado": { "type": "number" }
+        }
+      },
+
+      "TransacaoInput": {
+        "type": "object",
+        "properties": {
+          "valor": { "type": "number" },
+          "descricao": { "type": "string" },
+          "tipo": { "type": "string", "enum": ["debito", "ajuste", "estorno"] },
+          "lojaId": { "type": "string" }
+        }
+      },
+
+      "Transacao": {
+        "allOf": [
+          { "$ref": "#/components/schemas/TransacaoInput" },
+          {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "clienteId": { "type": "string" },
+              "status": { "type": "string", "enum": ["approved", "declined", "reversed"] },
+              "data": { "type": "string", "format": "date-time" }
+            }
+          }
+        ]
+      },
+
+      "Fatura": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "clienteId": { "type": "string" },
+          "vencimento": { "type": "string", "format": "date" },
+          "status": { "type": "string", "enum": ["aberta", "fechada", "paga"] },
+          "total": { "type": "number" },
+          "saldoDevedor": { "type": "number" },
+          "totalPago": { "type": "number" },
+          "transacoes": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Transacao" }
+          }
+        }
+      },
+
+      "PagamentoInput": {
+        "type": "object",
+        "properties": {
+          "clienteId": { "type": "string" },
+          "valor": { "type": "number" },
+          "forma": { "type": "string", "enum": ["pix", "dinheiro", "cartao", "boleto"] }
+        }
+      },
+
+      "Pagamento": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "clienteId": { "type": "string" },
+          "valor": { "type": "number" },
+          "forma": { "type": "string" },
+          "status": { "type": "string", "enum": ["pendente", "confirmado", "falhou"] },
+          "data": { "type": "string", "format": "date-time" }
+        }
+      },
+
+      "EmailNotificacao": {
+        "type": "object",
+        "properties": {
+          "para": { "type": "string" },
+          "assunto": { "type": "string" },
+          "mensagem": { "type": "string" }
+        }
+      },
+
+      "WhatsappNotificacao": {
+        "type": "object",
+        "properties": {
+          "telefone": { "type": "string" },
+          "mensagem": { "type": "string" }
+        }
+      }
+    }
+  }
+}

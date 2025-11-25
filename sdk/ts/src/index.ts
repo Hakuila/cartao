@@ -1,4 +1,4 @@
-import { CartaoInternoAPI } from "./sdk/api";
+import { CartaoInternoAPI } from "./sdk/ts/src/services/api";
 
 const api = new CartaoInternoAPI("https://api.cartao-interno.com");
 

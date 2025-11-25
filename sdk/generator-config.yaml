@@ -1,0 +1,19 @@
+typescript:
+  generatorName: typescript-fetch
+  outputDir: sdk/ts/generated
+  additionalProperties:
+    useSingleRequestParameter: true
+    enumPropertyNaming: UPPERCASE
+
+dart:
+  generatorName: dart-dio
+  outputDir: sdk/dart/generated
+  additionalProperties:
+    pubName: cartao_interno_sdk
+    nullSafety: true
+
+python:
+  generatorName: python
+  outputDir: sdk/python/generated
+  additionalProperties:
+    packageName: cartao_interno_sdk

@@ -1,4 +1,4 @@
-from sdk.api import CartaoInternoAPI
+from sdk.python.api import CartaoInternoAPI
 
 api = CartaoInternoAPI("https://api.cartao-interno.com")
 

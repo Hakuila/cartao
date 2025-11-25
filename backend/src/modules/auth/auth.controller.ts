@@ -1,13 +1,19 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
+import { Body, Controller, Post } from '@nestjs/common';
+import { UsersService } from './users.service';
+import * as bcrypt from 'bcrypt';
 
-@Controller('auth')
-export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+@Controller('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
 
-  @Post('login')
-  async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+  @Post()
+  async create(@Body() body: any) {
+    const passwordHash = await bcrypt.hash(body.password, 10);
+
+    return this.usersService.createUser(
+      body.email,
+      passwordHash,
+      body.role,
+    );
   }
 }

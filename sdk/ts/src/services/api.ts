@@ -7,7 +7,7 @@ import {
   Cliente,
   Transacao,
   Fatura
-} from "./types";
+} from "../models/types";
 
 export class CartaoInternoAPI {
   private http: AxiosInstance;

@@ -7,10 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 /// Usuário geral (admin, gerente, cliente)
 model User {
   id           String   @id @default(uuid())
@@ -53,23 +49,26 @@ model Product {
   price     Float
   store     Store    @relation(fields: [storeId], references: [id])
   storeId   String
+
+  orders    Order[]  
 }
 
 /// Cliente vinculado a uma loja
 model Customer {
-  id         String   @id @default(uuid())
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String   @unique
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @unique
 
-  store      Store    @relation(fields: [storeId], references: [id])
-  storeId    String
+  store       Store    @relation(fields: [storeId], references: [id])
+  storeId     String
 
   creditLimit Float
   balance     Float    @default(0)
-  dueDay      Int      // dia de vencimento
+  dueDay      Int
 
   transactions Transaction[]
   invoices     Invoice[]
+  orders       Order[]
 }
 
 /// Transações/Compras
@@ -110,4 +109,20 @@ model Payment {
 
   user      User     @relation(fields: [userId], references: [id])
   userId    String
+}
+
+/// Pedido / Ordem de compra
+model Order {
+  id          String     @id @default(uuid())
+  quantity    Int
+  total       Float
+  createdAt   DateTime   @default(now())
+
+  // Relação com Customer
+  customer    Customer   @relation(fields: [customerId], references: [id])
+  customerId  String
+
+  // Relação com Product
+  product     Product    @relation(fields: [productId], references: [id])
+  productId   String
 }

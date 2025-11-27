@@ -1,7 +1,7 @@
-import { IsString, IsNumber, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsUUID } from 'class-validator';
 
 export class CreateProductDto {
-  @IsString()
+  @IsNotEmpty()
   name: string;
 
   @IsNumber()

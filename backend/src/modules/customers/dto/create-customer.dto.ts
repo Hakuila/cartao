@@ -1,13 +1,17 @@
-import { IsEmail, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsUUID, Min, Max } from 'class-validator';
 
 export class CreateCustomerDto {
-  @IsString()
-  name: string;
+  @IsUUID()
+  userId: string;
 
-  @IsEmail()
-  email: string;
+  @IsUUID()
+  storeId: string;
 
-  @IsOptional()
-  @IsString()
-  phone?: string;
+  @IsNumber()
+  creditLimit: number;
+
+  @IsNumber()
+  @Min(1)
+  @Max(31)
+  dueDay: number;
 }

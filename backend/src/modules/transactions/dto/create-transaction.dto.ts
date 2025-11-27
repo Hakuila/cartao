@@ -1,5 +1,12 @@
-export class CreateTransactionDto {
+import { IsNumber, IsUUID } from 'class-validator';
+
+export class CreatePaymentDto {
+  @IsNumber()
   amount: number;
-  customerId: string;
+
+  @IsUUID()
+  invoiceId: string;
+
+  @IsUUID()
   userId: string;
 }
